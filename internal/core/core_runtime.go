@@ -1,29 +1,34 @@
+/*
+ * Copyright (c) 2017. Braedon Wooding
+ * Created under LICENSE, see the file LICENSE for information
+ */
+
 package core
 
 import (
 	"reflect"
 )
 
-type Runtime struct {
+type RuntimeCore struct {
 	stack []interface{}
 	// Should always begin at -1 to indicate that the array is empty
 	stackPtr  int
 	registers []interface{}
 }
 
-func (runtime *Runtime) CurrentStackSize() int {
+func (runtime *RuntimeCore) CurrentStackSize() int {
 	return runtime.stackPtr + 1
 }
 
-func (runtime *Runtime) MaxStackSize() int {
+func (runtime *RuntimeCore) MaxStackSize() int {
 	return len(runtime.stack)
 }
 
-func (runtime *Runtime) RegisterSize() int {
+func (runtime *RuntimeCore) RegisterSize() int {
 	return len(runtime.registers)
 }
 
-func (runtime *Runtime) ResizeStack(size int, carryAcross bool) {
+func (runtime *RuntimeCore) ResizeStack(size int, carryAcross bool) {
 	if carryAcross {
 		temp := runtime.stack
 		runtime.stack = make([]interface{}, size)
@@ -35,7 +40,7 @@ func (runtime *Runtime) ResizeStack(size int, carryAcross bool) {
 	}
 }
 
-func (runtime *Runtime) ResizeRegisters(size int, carryAcross bool) {
+func (runtime *RuntimeCore) ResizeRegisters(size int, carryAcross bool) {
 	if carryAcross {
 		temp := runtime.registers
 		runtime.registers = make([]interface{}, size)
@@ -45,41 +50,41 @@ func (runtime *Runtime) ResizeRegisters(size int, carryAcross bool) {
 	}
 }
 
-func (runtime *Runtime) SetStackPtr(value int) {
+func (runtime *RuntimeCore) SetStackPtr(value int) {
 	runtime.stackPtr = value
 }
 
-func (runtime *Runtime) IncrementStackPtr(value int) {
+func (runtime *RuntimeCore) IncrementStackPtr(value int) {
 	runtime.stackPtr += value
 }
 
-func (runtime *Runtime) DecrementStackPtr(value int) {
+func (runtime *RuntimeCore) DecrementStackPtr(value int) {
 	runtime.stackPtr -= value
 }
 
-func (runtime *Runtime) GetRegister(index int) interface{} {
+func (runtime *RuntimeCore) GetRegister(index int) interface{} {
 	return runtime.registers[index]
 }
 
-func (runtime *Runtime) SetRegister(index int, obj interface{}) {
+func (runtime *RuntimeCore) SetRegister(index int, obj interface{}) {
 	runtime.registers[index] = obj
 }
 
-func (runtime *Runtime) PushOntoStack(obj interface{}) {
+func (runtime *RuntimeCore) PushOntoStack(obj interface{}) {
 	runtime.stackPtr += 1
 	runtime.stack[runtime.stackPtr] = obj
 }
 
-func (runtime *Runtime) PeekFromStack() interface{} {
+func (runtime *RuntimeCore) PeekFromStack() interface{} {
 	return runtime.stack[runtime.stackPtr]
 }
 
-func (runtime *Runtime) PopFromStack() interface{} {
+func (runtime *RuntimeCore) PopFromStack() interface{} {
 	obj := runtime.PeekFromStack()
 	runtime.stackPtr -= 1
 	return obj
 }
 
-func (runtime *Runtime) TopOfStackIsOfType(typeToCheck reflect.Type) bool {
+func (runtime *RuntimeCore) TopOfStackIsOfType(typeToCheck reflect.Type) bool {
 	return reflect.TypeOf(runtime.PeekFromStack()).ConvertibleTo(typeToCheck)
 }
